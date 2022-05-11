@@ -5,6 +5,7 @@ const { findByEmail, create } = require('../models/users')
 const commonHelper = require('../helper/common')
 const jwt = require('jsonwebtoken')
 const authHelper = require('../helper/auth')
+const { sendEmail } = require('../helper/mail')
 
 const register = async (req, res, next) => {
   try {
@@ -31,7 +32,9 @@ const register = async (req, res, next) => {
       role: 'user'
     }
     await create(data)
+    sendEmail(email)
     commonHelper.response(res, null, 201, 'user berhasil resgiter')
+
   } catch (error) {
     console.log(error)
     next(new createError.InternalServerError())

@@ -1,6 +1,8 @@
 const createHttpError = require("http-errors");
 const { response } = require("../helper/common");
 const productModel = require("../models/products");
+const client = require('../config/redis')
+
 let products = [
   {
     id: 1,
@@ -36,10 +38,10 @@ const insert = async(req, res) => {
 const detailProduct = async (req, res) => {
   try {
     const id = req.params.id;
-    const result = await productModel.getProductById(id);
-    res.json({
-      data: result.rows[0],
-    });
+    const {rows:[product]} = await productModel.getProductById(id);
+    client.setEx(`product/${id}`, 60*60, JSON.stringify(product))
+    
+    response(res, product, 200, 'get data dari database')
   } catch (error) {
     console.log(error);
   }
