@@ -60,6 +60,7 @@ const login = async (req, res, next) => {
     }
     // generate token
     user.token = authHelper.generateToken(payload)
+    user.refreshToken = authHelper.gerateRefreshToken(payload)
 
     commonHelper.response(res, user, 201, 'anda berhasil login')
   } catch (error) {
@@ -76,9 +77,23 @@ const profile = async(req, res, next)=>{
 const deleteUser = async(req, res, next) =>{
 
 }
+const refreshToken = (req, res, next)=>{
+  const refreshToken = req.body.refreshToken
+  const decoded = jwt.verify(refreshToken, process.env.SECRET_KEY_JWT)
+  const payload = {
+    email: decoded.email,
+    role: decoded.role
+  }
+  const rusult = {
+    token: authHelper.generateToken(payload),
+    refreshToken: authHelper.gerateRefreshToken(payload)
+  }
+  commonHelper.response(res, rusult, 200)
+} 
 module.exports = {
   register,
   login,
   profile,
-  deleteUser
+  deleteUser,
+  refreshToken
 }

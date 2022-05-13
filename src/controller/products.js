@@ -39,7 +39,7 @@ const detailProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const {rows:[product]} = await productModel.getProductById(id);
-    client.setEx(`product/${id}`, 60*60, JSON.stringify(product))
+    // client.setEx(`product/${id}`, 60*60, JSON.stringify(product))
     
     response(res, product, 200, 'get data dari database')
   } catch (error) {
