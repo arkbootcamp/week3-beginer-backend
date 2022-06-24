@@ -7,10 +7,10 @@ const upload = require('../middlewares/upload')
 
 // -----> /products.....
 router
-  .get('/', productController.getProduct)
-  .get('/:id', productController.detailProduct)
+  .get('/', protect, productController.getProduct)
+  .get('/:id', protect, productController.detailProduct)
   .post('/', protect, upload.single('photo'), productController.insert)
   .put('/:id', productController.update)
-  .delete('/:idproduct', productController.delete)
+  .delete('/:idproduct', protect, productController.delete)
 
 module.exports = router

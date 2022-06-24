@@ -72,18 +72,26 @@ const update = (req, res) => {
 };
 const deleteProduct = (req, res) => {
   const id = req.params.idproduct;
-  products = products.filter((item) => item.id !== id);
-
+  productModel.deleteProductById(id)
   res.json({
-    message: "adata berhasil di hapus dengan id = " + id,
+    message: "data berhasil di update",
   });
 };
-const getProduct = (req, res) => {
-  console.log("");
-  res.json({
-    data: products,
-    username: req.username,
-  });
+const getProduct = async(req, res) => {
+  const page = parseInt(req.query.page) || 1
+  const limit = parseInt(req.query.limit) || 5
+  const offset = (page - 1) * limit
+  const {rows} = await productModel.getProduct({limit, offset});
+  const { rows: [count] } = await productModel.countProduct()
+    const totalData = parseInt(count.total)
+    const totalPage = Math.ceil(totalData / limit)
+    const pagination = {
+      currentPage: page,
+      limit,
+      totalData,
+      totalPage
+    }
+    response(res, rows, 200, 'get data dari database', pagination)
 };
 
 module.exports = {

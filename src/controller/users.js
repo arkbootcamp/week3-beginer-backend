@@ -61,7 +61,14 @@ const login = async (req, res, next) => {
     // generate token
     user.token = authHelper.generateToken(payload)
     user.refreshToken = authHelper.gerateRefreshToken(payload)
+    res.cookie('token', user.token, {
+      httpOnly: true,
+      maxAge: 60*1000*60*12,
+      secure: process.env.NODE_ENV !== 'Development' ? true: false,
+      path: '/',
+      sameSite: 'strict'
 
+    })
     commonHelper.response(res, user, 201, 'anda berhasil login')
   } catch (error) {
     console.log(error)
